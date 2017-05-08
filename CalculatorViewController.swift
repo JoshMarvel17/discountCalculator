@@ -10,7 +10,25 @@ import UIKit
 
 class CalculatorViewController: UIViewController, UITextFieldDelegate {
 
-    let calculation = calcData.shared 
+    @IBOutlet weak var priceTextbox: UITextField!
+    
+    @IBOutlet weak var dollarsOffTextbox: UITextField!
+    
+    @IBOutlet weak var discountTextbox: UITextField!
+    
+    @IBOutlet weak var otherDiscountTextbox: UITextField!
+    
+    @IBOutlet weak var taxTextbox: UITextField!
+    
+    @IBOutlet weak var originalPriceLabel: UILabel!
+    
+    
+    @IBOutlet weak var discountPriceLabel: UILabel!
+    
+    let discountData = calcData.shared
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -32,6 +50,9 @@ class CalculatorViewController: UIViewController, UITextFieldDelegate {
     //Swipe Function
     func handleSwipe(_ sender:UISwipeGestureRecognizer)
     {
+        getInput()
+        discountData.Calculate()
+        displayTotals()
         self.performSegue(withIdentifier: "showResults", sender: self)
     }
     
@@ -49,45 +70,84 @@ class CalculatorViewController: UIViewController, UITextFieldDelegate {
     }
     */
     
-    //MARK: Outlets
-    
-    @IBOutlet weak var priceTextbox: UITextField!
-    
-    @IBOutlet weak var dollarsOffTextbox: UITextField!
-    
-    @IBOutlet weak var discountTextbox: UITextField!
-    
-    @IBOutlet weak var otherDiscountTextbox: UITextField!
-    
-    @IBOutlet weak var taxTextbox: UITextField!
-    
-    @IBOutlet weak var orginalPriceLabel: UILabel!
-    
-    @IBOutlet weak var discountPriceLabel: UILabel!
     
     
     
-    func Calculate()
+    private func getInput(){
+        
+        if (priceTextbox.text == "")
+        {
+            priceTextbox.text = "0.0"
+           discountData.price = Double(priceTextbox.text!)!
+        }
+        else
+        {
+            discountData.price = Double(priceTextbox.text!)!
+        }
+        
+        if (dollarsOffTextbox.text == "")
+        {
+            dollarsOffTextbox.text = "0.0"
+            discountData.dollarsOff = Double(dollarsOffTextbox.text!)!
+        }
+        else
+        {
+            discountData.dollarsOff = Double(dollarsOffTextbox.text!)!
+        }
+        
+        if (discountTextbox.text == "")
+        {
+            discountTextbox.text = "0.0"
+            discountData.discount = Double(discountTextbox.text!)!
+        }
+        else
+        {
+            discountData.discount = Double(discountTextbox.text!)!
+        }
+        
+        if (otherDiscountTextbox.text == "")
+        {
+            otherDiscountTextbox.text = "0.0"
+            discountData.otherDiscount = Double(otherDiscountTextbox.text!)!
+        }
+        else
+        {
+            discountData.otherDiscount = Double(otherDiscountTextbox.text!)!
+        }
+        
+        if (taxTextbox.text == "")
+        {
+            taxTextbox.text = "0.0"
+            discountData.tax = Double(taxTextbox.text!)!
+            
+        }
+        else
+        {
+            discountData.tax = Double(taxTextbox.text!)!
+        }
+        
+      
+    }
+    
+   
+    
+    
+    @IBAction func CalcButton(_ sender: UIButton) {
+        
+        getInput()
+         discountData.Calculate()
+        displayTotals()
+        //self.performSegue(withIdentifier: "showResults", sender: self)
+        
+    }
+    
+    func displayTotals()
     {
-        var total = Float(0)
-        taxTextbox.text = "7.75"
-        let price: Float = Float(priceTextbox.text!)!
-        let tax: Float = Float(taxTextbox.text!)!
-        total = price * tax
-        orginalPriceLabel.text = String(total)
+        originalPriceLabel.text = "Original Price $ \(String(format: "%.2f", discountData.priceWithTax))"
         
-        
+        discountPriceLabel.text = "Discounted Price $ \(String(format: "%.2f", discountData.discountedPrice))"
         
     }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        myDiscountCalc.price = Float(priceTextField.text!)!
-    }
-    
-    func grabValue(){
-    
-    }
-    
     
     
     
